@@ -1,0 +1,27 @@
+name: Milestones
+version: 0.1.0
+description: milestones
+icon: plug
+author:
+  name: nouyang
+  email: 
+homepage: https://github.com/nouyang/grav-plugin-milestones
+demo: n/a
+keywords: grav, plugin, etc
+bugs: https://github.com/nouyang/grav-plugin-milestones/issues
+docs: https://github.com/nouyang/grav-plugin-milestones/blob/develop/README.md
+license: MIT
+
+form:
+  validation: strict
+  fields:
+    enabled:
+      type: toggle
+      label: Plugin status
+      highlight: 1
+      default: 0
+      options:
+        1: Enabled
+        0: Disabled
+      validate:
+        type: bool
