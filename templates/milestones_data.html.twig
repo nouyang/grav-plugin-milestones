@@ -1,0 +1,42 @@
+{% extends 'partials/base.html.twig' %}
+
+{% block content %}
+<div class="container internal">
+  <div class="row">
+
+    {{ content }}
+
+
+    {% if grav.twig.milestones|length %}
+    <table class="table table-bordered table-striped table-hover">
+    <h3>Milestones</h3>
+      <thead>
+        <tr>
+          <td>	
+            Milestone
+          </td> <td>	
+            Author
+          </td> <td>	
+            Date
+          </td>
+        </tr>
+      </thead>
+
+      {% for milestone in grav.twig.milestones|array_reverse %}
+      <tr>
+        <td>	
+          {{milestone.text}}
+        </td> <td>	
+          {{milestone.date|e}} 
+        </td> <td>	
+          {{milestone.author}}
+        </td> 
+      </tr>
+      {% endfor %}
+    {% endif %}
+    </table>
+
+
+  </div>
+</div>
+{% endblock %}

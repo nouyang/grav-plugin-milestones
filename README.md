@@ -1,30 +1,14 @@
 # Milestones Plugin
 
-**This README.md file should be modified to describe the features, installation, configuration, and general usage of this plugin.**
-
-The **Milestones** Plugin is for [Grav CMS](http://github.com/getgrav/grav). milestones
+The **Milestones** Plugin is for [Grav CMS](http://github.com/getgrav/grav). 
 
 ## Installation
 
-Installing the Milestones plugin can be done in one of two ways. The GPM (Grav Package Manager) installation method enables you to quickly and easily install the plugin with a simple terminal command, while the manual method enables you to do so via a zip file.
-
-### GPM Installation (Preferred)
-
-The simplest way to install this plugin is via the [Grav Package Manager (GPM)](http://learn.getgrav.org/advanced/grav-gpm) through your system's terminal (also called the command line).  From the root of your Grav install type:
+From the root of your Grav install type:
 
     bin/gpm install milestones
 
 This will install the Milestones plugin into your `/user/plugins` directory within Grav. Its files can be found under `/your/site/grav/user/plugins/milestones`.
-
-### Manual Installation
-
-To install this plugin, just download the zip version of this repository and unzip it under `/your/site/grav/user/plugins`. Then, rename the folder to `milestones`. You can find these files on [GitHub](https://github.com/nouyang/grav-plugin-milestones) or via [GetGrav.org](http://getgrav.org/downloads/plugins#extras).
-
-You should now have all the plugin files under
-
-    /your/site/grav/user/plugins/milestones
-	
-> NOTE: This plugin is a modular component for Grav which requires [Grav](http://github.com/getgrav/grav) and the [Error](https://github.com/getgrav/grav-plugin-error) and [Problems](https://github.com/getgrav/grav-plugin-problems) to operate.
 
 ## Configuration
 
@@ -38,14 +22,17 @@ enabled: true
 
 ## Usage
 
+
+### 1
+
 Create a form and in the process section, include milestones.
 
-`/var/www/html/grav/user/pages/08.form/form.md`
+`/var/www/html/grav/user/pages/08.milestones/form.md`
+
 
 	---
 	title: Milestones
 	slug: milestones
-
 
 	form:
 	    name: milestones
@@ -86,10 +73,11 @@ Create a form and in the process section, include milestones.
 
 	Whoo milestones!
 
+### 2
 
-Make sure to also create a "thankyou" subdirectory if you want to display a page with the data.
+Make sure to also create a "thankyou" subdirectory if you want to display a confirmation page with the data submitted
 
-/var/www/html/dev/user/pages/08.form/thankyou $ vi formdata.md
+`/var/www/html/dev/user/pages/08.form/thankyou $ vi thankyou.md`
 
 	---
 	title: Thank you
@@ -100,27 +88,11 @@ Make sure to also create a "thankyou" subdirectory if you want to display a page
 
 	## Thanks for submitting your milestones!
 
-If your theme doesn't have it, make sure to create a formdata.html.twig
-
-/var/www/html/dev/user/themes/gravstrap-theme/templates $ vi formdata.html.twig
-
-	{% extends 'partials/base.html.twig' %}
-
-	{% block content %}
-
-	    {{ content }}
-
-	    <div class="alert">{{ form.message }}</div>
-	    <p>Here is the summary of what you wrote to us:</p>
-
-	    {% include "forms/data.html.twig" %}
-
-	{% endblock %}
-
+### 3
 
 To make your form look pretty, you can also add this file:
 
-/var/www/html/dev/user/themes/gravstrap-theme/css $ vi custom.css
+`/var/www/html/dev/user/themes/gravstrap-theme/css $ vi custom.css`
 
 	fieldset {
 	  border: 1px solid #ddd; }
@@ -133,14 +105,93 @@ To make your form look pretty, you can also add this file:
 	    width: 100%;
 	    border: 1px solid #ddd;
 	}
+### 4
 
+Finally add a page to display all the data. Name it `milestones_data` to match our `.html.twig` template
+
+`/var/www/html/grav/user/pages/09.milestones_data/milestones_data.md`
+
+	---
+	title: Milestones Review 
+	slug: milestones-data
+	metadata:
+	    description: Milestones data
+	    author: nouyang 
+
+	---
+
+	# Here is all the data
+	All the milestones.
+
+## Explanation
+
+### Processing the form
+
+
+```
+form:
+    process:
+         - milestones:
+```
+
+In milestones.php, we create a new onFormProcessed, and catch the action "milestones".
+We take the form input, turn it into yaml, and we store as /user/data/milestones/$name.yaml
+See "data example" section for format.
+
+### Displaying the contents
+
+We take the data directory, get a list of all files in it, parse all files as YAML, and create "milestones" array containing all the milestones that we pass to Twig as a variable.
+
+In the templates/milestones_data.html.twig, we loop through the array and display each milestone with the author and date in a table.
+
+#### Data example
+
+```
+nrw@nrw-PC:/var/www/html/dev/user/data/milestones$ ls
+adfsf.yaml  ads.yaml  asdf.yaml  sdfsdf.yaml
+
+nrw@nrw-PC:/var/www/html/dev/user/data/milestones$ cat *
+name: adfsf
+milestones:
+    - { text: adf, date: 'Sat, 10 Dec 2016 23:58:17' }
+name: ads
+milestones:
+    - { date: 'Thu, 15 Dec 2016 03:42:38', text: asdfasadfasdf }
+    - { date: 'Thu, 15 Dec 2016 03:43:09', text: asdfasadfasdf }
+name: asdf
+milestones:
+    - { text: asdf, date: 'Sun, 11 Dec 2016 23:21:01' }
+    - { text: asdfasdfsadfasdf, date: 'Wed, 14 Dec 2016 18:16:47' }
+    - { date: 'Thu, 15 Dec 2016 03:41:56', text: dsafasdfsaf }
+    - { date: 'Thu, 15 Dec 2016 03:42:22', text: dsafasdfsaf }
+name: sdfsdf
+milestones:
+    - { date: 'Wed, 14 Dec 2016 19:04:26', text: sadfsadfsadfsf }
+```
+
+
+
+#### Screenshots
+
+![form](milestones.md.png)
+
+![all data](milestones_data.md.png)
 
 ## Credits
 
-Thanks to the cat gifs on the internet that kept me going.
+Thanks to the cat gifs on the internet.
 
 ## To Do
 
-- [ ] Add in requirements (form plugin)
-- [ ] Display milestones somewhere
+- [ ] Add in dependencies for this plugin (form plugin)
+- [x] Display milestones somewhere
+- [ ] Add file uploads
+- [ ] Display file uploads with milestone
+- [ ] Make sortable the display of all milestones
+
+###
+
+Spec
+
+4 pages.
 

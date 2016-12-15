@@ -1,0 +1,11 @@
+{% extends 'partials/base.html.twig' %}
+
+{% block content %}
+<div class="container internal">
+    <div class="row">
+    {{ content }}
+
+    {% include "forms/data.html.twig" %}
+        </div>
+</div>
+{% endblock %}
